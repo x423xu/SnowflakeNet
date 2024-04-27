@@ -20,7 +20,7 @@ class SeedGenerator(nn.Module):
             nn.Conv1d(64, 3, 1)
         )
 
-    def forward(self, feat):
+    def forward(self, feat, return_latent=False):
         """
         Args:
             feat: Tensor (b, dim_feat, 1)
@@ -30,6 +30,8 @@ class SeedGenerator(nn.Module):
         x2 = self.mlp_2(x1)
         x3 = self.mlp_3(torch.cat([x2, feat.repeat((1, 1, x2.size(2)))], 1))  # (b, 128, 256)
         out_points = self.mlp_4(x3)  # (b, 3, 256)
+        if return_latent:
+            return x3
         return out_points
 
 class Decoder(nn.Module):
